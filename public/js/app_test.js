@@ -20,22 +20,22 @@ const buildButton = () => {
     newDiv.appendChild(newButton);
     profileDiv.insertAdjacentElement('afterend', newDiv);
 };
-window.litone.onPage((page) => {
+window.lintone.onPage((page) => {
     if (page !== 'list') {
         buildButton();
     }
 });
 
-let page = litone.page();
+let page = lintone.page();
 if (page !== 'list') buildButton();
 
 // afterCreateRecord function to handle record creation
-litone.afterCreateRecord = async (data) => {
+lintone.afterCreateRecord = async (data) => {
     console.log('afterCreateRecord', data);
     if (data.type == 'create' && data.response.id) {
 
-        let query = `product_name = "${litone.getValueById('Lookup')}"`;
-        let data = await litone.getDataKintone(1337, query);
+        let query = `product_name = "${lintone.getValueById('Lookup')}"`;
+        let data = await lintone.getDataKintone(1337, query);
         if (data.status == 200 && data.data.records.length > 0) {
             let record = data.data.records[0];
             var body = {
@@ -43,25 +43,25 @@ litone.afterCreateRecord = async (data) => {
                 'id': record.$id.value,
                 'record': {
                     'product_name': {
-                        'value': litone.getValueById('Lookup')
+                        'value': lintone.getValueById('Lookup')
                     },
                     'Products_exported': {
-                        'value': Number(record.Products_exported.value) + Number(litone.getValueById('Products_exported'))
+                        'value': Number(record.Products_exported.value) + Number(lintone.getValueById('Products_exported'))
                     },
                     'imported_products': {
-                        'value': Number(record.imported_products.value) + Number(litone.getValueById('imported_products_0'))
+                        'value': Number(record.imported_products.value) + Number(lintone.getValueById('imported_products_0'))
                     },
                     'total_product': {
-                        'value': Number(record.total_product.value) - Number(litone.getValueById('Products_exported')) + Number(litone.getValueById('imported_products_0'))
+                        'value': Number(record.total_product.value) - Number(lintone.getValueById('Products_exported')) + Number(lintone.getValueById('imported_products_0'))
                     },
                 }
             };
-            let update = await litone.updateKintoneRecord(body);
+            let update = await lintone.updateKintoneRecord(body);
             console.log('Update record response:', update);
             if (!update.code) {
-                let userName = litone.getValueById('importer');
+                let userName = lintone.getValueById('importer');
                 let query = `name = "${userName}"`;
-                let dataKintoneApp1356 = await litone.getDataKintone(1356, query);
+                let dataKintoneApp1356 = await lintone.getDataKintone(1356, query);
                 if (dataKintoneApp1356.status == 200 && dataKintoneApp1356.data.records.length > 0) {
                     let record1356 = dataKintoneApp1356.data.records[0];
                     var bodyUpdate = {
@@ -69,38 +69,38 @@ litone.afterCreateRecord = async (data) => {
                         'id': record1356.$id.value,
                         'record': {
                             'inport_number': {
-                                'value': Number(record1356.inport_number.value) + Number(litone.getValueById('imported_products_0'))
+                                'value': Number(record1356.inport_number.value) + Number(lintone.getValueById('imported_products_0'))
                             },
                             'inport_number_0': {
-                                'value': Number(record1356.inport_number_0.value) + Number(litone.getValueById('Products_exported'))
+                                'value': Number(record1356.inport_number_0.value) + Number(lintone.getValueById('Products_exported'))
                             },
                         }
                     };
-                    let update1356 = await litone.updateKintoneRecord(bodyUpdate);
+                    let update1356 = await lintone.updateKintoneRecord(bodyUpdate);
                     console.log('Update record 1356 response:', update1356);
-                    litone.sendMessage("update thành công");
+                    lintone.sendMessage("update thành công");
                 }
                 else {
                     let body = {
                         'app': 1356,
                         'record': {
                             'name': {
-                                'value': litone.getValueById('importer')
+                                'value': lintone.getValueById('importer')
                             },
                             'inport_number': {
-                                'value': Number(litone.getValueById('imported_products_0'))
+                                'value': Number(lintone.getValueById('imported_products_0'))
                             },
                             'inport_number_0': {
-                                'value': Number(litone.getValueById('Products_exported'))
+                                'value': Number(lintone.getValueById('Products_exported'))
                             },
                         }
                     };
-                    let create = await litone.createKintoneRecord(body)
+                    let create = await lintone.createKintoneRecord(body)
                     console.log('tạo mới thành công', create);
                 }
             }
             else {
-                litone.sendMessage("update failed", "error");
+                lintone.sendMessage("update failed", "error");
             }
             // if(update)
         }
@@ -108,18 +108,18 @@ litone.afterCreateRecord = async (data) => {
     return true; // Prevent default behavior
 }
 // afterUpdateRecord function to handle record updates
-litone.afterUpdateRecord = async (data) => {
+lintone.afterUpdateRecord = async (data) => {
     console.log('afterUpdateRecord', data);
     if (data.type == 'update' && data.response.revision) {
 
     }
     return true; // Prevent default behavior
 };
-litone.afterDeleteRecord = async (data) => {
+lintone.afterDeleteRecord = async (data) => {
     if (data.type == 'delete' && data.response.success) {
         let record = data.record
         let query = `product_name = "${record.Lookup.value}"`;
-        let data1337 = await litone.getDataKintone(1337, query);
+        let data1337 = await lintone.getDataKintone(1337, query);
         if (data1337.status == 200 && data1337.data.records.length > 0) {
             let recordApp1337 = data1337.data.records[0];
             var body = {
@@ -140,12 +140,12 @@ litone.afterDeleteRecord = async (data) => {
                     },
                 }
             };
-            let update = await litone.updateKintoneRecord(body);
+            let update = await lintone.updateKintoneRecord(body);
             console.log('Update record response:', update);
             if (!update.code) {
                 let userName =  record.importer.value;
                 let query = `name = "${userName}"`;
-                let dataKintoneApp1356 = await litone.getDataKintone(1356, query);
+                let dataKintoneApp1356 = await lintone.getDataKintone(1356, query);
                 if (dataKintoneApp1356.status == 200 && dataKintoneApp1356.data.records.length > 0) {
                     let record1356 = dataKintoneApp1356.data.records[0];
                     var bodyUpdate = {
@@ -160,9 +160,9 @@ litone.afterDeleteRecord = async (data) => {
                             },
                         }
                     };
-                    let update1356 = await litone.updateKintoneRecord(bodyUpdate);
+                    let update1356 = await lintone.updateKintoneRecord(bodyUpdate);
                     console.log('Update record 1356 response:', update1356);
-                    litone.sendMessage("update thành công");
+                    lintone.sendMessage("update thành công");
                 }
                 else {
                     let body = {
@@ -179,13 +179,13 @@ litone.afterDeleteRecord = async (data) => {
                             },
                         }
                     };
-                    let create = await litone.createKintoneRecord(body)
+                    let create = await lintone.createKintoneRecord(body)
                     console.log('tạo mới thành công', create);
                 }
             }
         }
         else {
-            litone.sendMessage("update failed", "error");
+            lintone.sendMessage("update failed", "error");
 
         }
     }
