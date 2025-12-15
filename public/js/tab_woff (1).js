@@ -99,7 +99,7 @@ const resetTabActive = () => {
     });
 
     const firstTab = globalTabsData[0];
-    firstTab.labelRow.classList.remove('tab-hidden');
+    //firstTab.labelRow.classList.remove('tab-hidden');
     firstTab.contentWrapper.classList.remove('tab-hidden');
 
     if (tabMask) {
